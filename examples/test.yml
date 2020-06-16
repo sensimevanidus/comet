@@ -1,6 +1,6 @@
 name: "Time Service Integration Test"
 
-baseURL: "https://time.servogram.io" # Go template format (the goal is to provide this value from the environment)
+baseURL: "https://example.com" # Go template format (the goal is to provide this value from the environment)
 
 steps:
   - title: "Time service test"
@@ -25,9 +25,7 @@ steps:
     request:
       type: "application/json"
       body:
-        appId: "ptesta"
-        platform: "android"
-        userId: "12345678123456781234567812345678"
+        id: "test"
     response:
       code: 200
       type: "application/json"
