@@ -1,0 +1,39 @@
+name: "Time Service Integration Test"
+
+baseURL: "https://time.servogram.io" # Go template format (the goal is to provide this value from the environment)
+
+steps:
+  - title: "Time service test"
+    method: "GET"
+    path: "/"
+    response:
+      code: 200
+      type: "application/json"
+      body:
+        responseTimestamp:
+          validator: "BigNumber"
+        status:
+          validator: "String"
+          value: "ok"
+      store:
+        - responseTimestamp: "responseTimestamp"
+        - status: "status"
+  
+  - title: "Time service error test"
+    method: "POST"
+    path: "/"
+    request:
+      type: "application/json"
+      body:
+        appId: "ptesta"
+        platform: "android"
+        userId: "12345678123456781234567812345678"
+    response:
+      code: 200
+      type: "application/json"
+      body:
+        responseTimestamp:
+          validator: "BigNumber"
+        status:
+          validator: "String"
+          value: "ok"
