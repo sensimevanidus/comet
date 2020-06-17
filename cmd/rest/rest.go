@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sensimevanidus/rest/pkg/rest"
+	"github.com/sensimevanidus/rest"
 )
 
 const usage = `Usage: rest <yaml-file>
