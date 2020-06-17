@@ -10,8 +10,6 @@ steps:
       code: 200
       type: "application/json"
       body:
-        responseTimestamp:
-          validator: "BigNumber"
         status:
           validator: "String"
           value: "ok"
@@ -30,8 +28,5 @@ steps:
       code: 200
       type: "application/json"
       body:
-        responseTimestamp:
-          validator: "BigNumber"
         status:
           validator: "String"
-          value: "ok"
