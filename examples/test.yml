@@ -10,5 +10,5 @@ steps:
       type: "application/json"
       body:
         status:
-          validator: "String"
+          validator: "string"
           value: "success"

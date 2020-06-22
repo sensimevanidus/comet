@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	validatorTypeBigNumber = "BigNumber"
-	validatorTypeString    = "String"
+	validatorTypeBigNumber = "bigNumber"
+	validatorTypeString    = "string"
 )
 
 // Validator is an interface that represents the ability to validate
