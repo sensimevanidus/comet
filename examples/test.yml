@@ -1,32 +1,14 @@
-name: "Time Service Integration Test"
-
-baseURL: "https://example.com" # Go template format (the goal is to provide this value from the environment)
+name: "Service Integration Test"
 
 steps:
-  - title: "Time service test"
-    method: "GET"
-    path: "/"
-    response:
-      code: 200
-      type: "application/json"
-      body:
-        status:
-          validator: "String"
-          value: "ok"
-      store:
-        - responseTimestamp: "responseTimestamp"
-        - status: "status"
-  
-  - title: "Time service error test"
-    method: "POST"
-    path: "/"
+  - title: "Example endpoint"
     request:
-      type: "application/json"
-      body:
-        id: "test"
+      method: "GET"
+      url: "http://dummy.restapiexample.com/api/v1/employees"
     response:
       code: 200
       type: "application/json"
       body:
         status:
           validator: "String"
+          value: "success"

@@ -10,8 +10,10 @@ import (
 )
 
 type testRequest struct {
-	Type string                 `yaml:"type"`
-	Body map[string]interface{} `yaml:"body"`
+	Method string                 `yaml:"method"`
+	URL    string                 `yaml:"url"`
+	Type   string                 `yaml:"type"`
+	Body   map[string]interface{} `yaml:"body"`
 }
 
 func (r testRequest) GetBody() (io.Reader, error) {
@@ -38,10 +40,7 @@ type testResponse struct {
 }
 
 type testStep struct {
-	baseURL  string
 	Title    string       `yaml:"title"`
-	Method   string       `yaml:"method"`
-	Path     string       `yaml:"path"`
 	Request  testRequest  `yaml:"request,omitempty"`
 	Response testResponse `yaml:"response,omitempty"`
 }
@@ -51,9 +50,8 @@ func (s testStep) String() string {
 }
 
 type testConfiguration struct {
-	Name    string     `yaml:"name"`
-	BaseURL string     `yaml:"baseURL"`
-	Steps   []testStep `yaml:"steps"`
+	Name  string     `yaml:"name"`
+	Steps []testStep `yaml:"steps"`
 }
 
 func RunTestSuite(configFilePath string) error {
@@ -70,7 +68,6 @@ func RunTestSuite(configFilePath string) error {
 
 	fmt.Printf("Test suite: %s\n\n", conf.Name)
 	for i, step := range conf.Steps {
-		step.baseURL = conf.BaseURL
 		ok, err := runTestStep(step, client)
 		if err != nil {
 			fmt.Printf("%d. [%s] %s\n", i, step.String(), err.Error())
@@ -90,7 +87,7 @@ func runTestStep(step testStep, client *http.Client) (bool, error) {
 		return false, err
 	}
 
-	request, err := http.NewRequest(step.Method, step.baseURL+step.Path, requestBody)
+	request, err := http.NewRequest(step.Request.Method, step.Request.URL, requestBody)
 	if err != nil {
 		return false, err
 	}
