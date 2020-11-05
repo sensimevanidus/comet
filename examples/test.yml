@@ -1,10 +1,26 @@
 name: "Service Integration Test"
 
+variables:
+  BaseURL: "http://dummy.restapiexample.com"
+
 steps:
   - title: "Example endpoint"
     request:
       method: "GET"
-      url: "http://dummy.restapiexample.com/api/v1/employees"
+      url: "{{.BaseURL}}/api/v1/employees"
+    response:
+      code: 200
+      type: "application/json"
+      body:
+        status:
+          validator: "string"
+          value: "success"
+      store:
+        - status: Employees
+  - title: "Example endpoint for testing environment variables"
+    request:
+      method: "GET"
+      url: "{{.BaseURL}}/api/v1/{{.Employees}}"
     response:
       code: 200
       type: "application/json"

@@ -50,8 +50,10 @@ func (s testStep) String() string {
 }
 
 type testConfiguration struct {
-	Name  string     `yaml:"name"`
-	Steps []testStep `yaml:"steps"`
+	path      string
+	Name      string            `yaml:"name"`
+	Variables map[string]string `yaml:"variables"`
+	Steps     []testStep        `yaml:"steps"`
 }
 
 func RunTestSuite(configFilePath string) error {
@@ -64,24 +66,32 @@ func RunTestSuite(configFilePath string) error {
 		return fmt.Errorf("make sure to provide a valid configuration file")
 	}
 
+	// storage setup (for variables)
+	getStorage(conf.Name).enrichStorageWithEnvironmentVariables()
+
 	client := &http.Client{}
 
 	fmt.Printf("Test suite: %s\n\n", conf.Name)
-	for i, step := range conf.Steps {
-		ok, err := runTestStep(step, client)
+	for i, _ := range conf.Steps {
+		step, err := getTestStepFromYAML(i, conf.Name, conf)
 		if err != nil {
 			fmt.Printf("%d. [%s] %s\n", i, step.String(), err.Error())
-		} else if !ok {
-			fmt.Printf("%d. [%s] failed\n", i, step.String())
 		} else {
-			fmt.Printf("%d. [%s] ok\n", i, step.String())
+			ok, err := runTestStep(*step, client, conf)
+			if err != nil {
+				fmt.Printf("%d. [%s] %s\n", i, step.String(), err.Error())
+			} else if !ok {
+				fmt.Printf("%d. [%s] failed\n", i, step.String())
+			} else {
+				fmt.Printf("%d. [%s] ok\n", i, step.String())
+			}
 		}
 	}
 
 	return nil
 }
 
-func runTestStep(step testStep, client *http.Client) (bool, error) {
+func runTestStep(step testStep, client *http.Client, conf *testConfiguration) (bool, error) {
 	requestBody, err := step.Request.GetBody()
 	if err != nil {
 		return false, err
@@ -133,6 +143,18 @@ func runTestStep(step testStep, client *http.Client) (bool, error) {
 			return false, fmt.Errorf("could not validate response for key %s. want: %+v, got: %+v", expectedKey, expectedValueValidator.Value, value)
 		}
 	}
+
+	// enrich variables by storing response parts, if provided
+	for _, dataStoredFromResponse := range step.Response.Store {
+		for storedField, storageName := range dataStoredFromResponse {
+			if value, ok := responseBodyAsJSON[storedField].(string); ok {
+				getStorage(conf.Name).write(storageName, value)
+			}
+		}
+	}
+
+	fmt.Printf("variables: %+v\n", conf.Variables)
+	fmt.Printf("storage: %+v\n", *getStorage(conf.Name))
 
 	return true, nil
 }

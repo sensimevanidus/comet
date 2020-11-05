@@ -11,7 +11,7 @@ const (
 )
 
 // Validator is an interface that represents the ability to validate
-// whether the given value comforms with what's expected.
+// whether the given value conforms with the expected value.
 type Validator interface {
 	Validate(value interface{}) (bool, error)
 }
