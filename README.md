@@ -1,7 +1,7 @@
 # rest
 Command-line tool for automated testing of RESTful APIs
 
-## Examples
+## Examples
 
 There's an example YAML file under the `examples` directory. You can use it to test the app.
 
