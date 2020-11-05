@@ -1,4 +1,4 @@
-module github.com/sensimevanidus/rest
+module github.com/sensimevanidus/comet
 
 go 1.14
 

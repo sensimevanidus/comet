@@ -5,10 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/sensimevanidus/rest"
+	"github.com/sensimevanidus/comet"
 )
 
-const usage = `Usage: rest <yaml-file>
+const usage = `Usage: comet <yaml-file>
 `
 
 func printUsageAndExit() {
@@ -21,7 +21,7 @@ func main() {
 		printUsageAndExit()
 	}
 
-	if err := rest.RunTestSuite(os.Args[1]); err != nil {
+	if err := comet.RunTestSuite(os.Args[1]); err != nil {
 		log.Fatal(err)
 	}
 }

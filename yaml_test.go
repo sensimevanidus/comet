@@ -1,4 +1,4 @@
-package rest
+package comet
 
 import "testing"
 

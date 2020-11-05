@@ -1,4 +1,4 @@
-# rest
+# comet
 Command-line tool for automated testing of RESTful APIs
 
 ## Examples
@@ -7,5 +7,5 @@ There's an example YAML file under the `examples` directory. You can use it to t
 
 Command to test:
 ```shell
-go run rest.go <yaml-file>
+go run comet.go <yaml-file>
 ```
