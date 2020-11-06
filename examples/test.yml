@@ -15,12 +15,10 @@ steps:
         status:
           validator: "string"
           value: "success"
-      store:
-        - status: Employees
   - title: "Example endpoint for testing environment variables"
     request:
       method: "GET"
-      url: "{{.BaseURL}}/api/v1/{{.Employees}}"
+      url: "{{.BaseURL}}/api/v1/employees"
     response:
       code: 200
       type: "application/json"

@@ -70,22 +70,35 @@ func RunTestSuite(configFilePath string) error {
 	getStorage(conf.Name).enrichStorageWithEnvironmentVariables()
 
 	client := &http.Client{}
-
-	fmt.Printf("Test suite: %s\n\n", conf.Name)
+	failed := false
 	for i, _ := range conf.Steps {
 		step, err := getTestStepFromYAML(i, conf.Name, conf)
 		if err != nil {
-			fmt.Printf("%d. [%s] %s\n", i, step.String(), err.Error())
-		} else {
-			ok, err := runTestStep(*step, client, conf)
-			if err != nil {
-				fmt.Printf("%d. [%s] %s\n", i, step.String(), err.Error())
-			} else if !ok {
-				fmt.Printf("%d. [%s] failed\n", i, step.String())
-			} else {
-				fmt.Printf("%d. [%s] ok\n", i, step.String())
-			}
+			failed = true
+			fail(i, nil, err)
+			break
 		}
+
+		// TODO: parametrize the final option
+		println(fmt.Sprintf("=== RUN   %s", step.Title), true, true)
+		ok, err := runTestStep(*step, client, conf)
+		if err != nil {
+			fail(i, step, err)
+			failed = true
+		} else if !ok {
+			fail(i, step, nil)
+			failed = true
+		} else {
+			// TODO: parametrize the final option
+			success(i, *step, true)
+		}
+	}
+
+	if failed {
+		println(fmt.Sprintf("FAIL    %s (0.00s)", conf.Name), false, true)
+	} else {
+		println("PASS", false, true)
+		println(fmt.Sprintf("ok      %s (0.00s)", conf.Name), false, true)
 	}
 
 	return nil
@@ -152,9 +165,6 @@ func runTestStep(step testStep, client *http.Client, conf *testConfiguration) (b
 			}
 		}
 	}
-
-	fmt.Printf("variables: %+v\n", conf.Variables)
-	fmt.Printf("storage: %+v\n", *getStorage(conf.Name))
 
 	return true, nil
 }
