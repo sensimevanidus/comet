@@ -52,8 +52,8 @@ FAIL
 exit status 1
 FAIL    github.com/sensimevanidus/comet 0.269s
 ```
-* Default to status code 200 when no response is provided
-* Make verbose output optional
+* [DONE] Make verbose output optional
+* Default to status code 200 when no response is provided.
 * Implement correct counters for test steps + test suite
 * Implement `regex` validator.
 * Add `headers` under both `request` and `response` (and remove the `type` from both `request` and `response`).

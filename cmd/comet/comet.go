@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -8,7 +9,10 @@ import (
 	"github.com/sensimevanidus/comet"
 )
 
-const usage = `Usage: comet <yaml-file>
+const usage = `Usage: comet [options...] <yamlFile>
+
+Options:
+  -v  Verbose output.
 `
 
 func printUsageAndExit() {
@@ -17,11 +21,13 @@ func printUsageAndExit() {
 }
 
 func main() {
-	if 1 >= len(os.Args) {
+	verbose := flag.Bool("v", false, "Verbose output")
+	flag.Parse()
+	if 1 > len(flag.Args()) {
 		printUsageAndExit()
 	}
 
-	if err := comet.RunTestSuite(os.Args[1]); err != nil {
+	if err := comet.RunTestSuite(flag.Args()[0], *verbose); err != nil {
 		log.Fatal(err)
 	}
 }

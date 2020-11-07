@@ -56,7 +56,7 @@ type testConfiguration struct {
 	Steps     []testStep        `yaml:"steps"`
 }
 
-func RunTestSuite(configFilePath string) error {
+func RunTestSuite(configFilePath string, verbose bool) error {
 	conf, err := readConfigurationFromFile(configFilePath)
 	if err != nil {
 		return err
@@ -79,8 +79,7 @@ func RunTestSuite(configFilePath string) error {
 			break
 		}
 
-		// TODO: parametrize the final option
-		println(fmt.Sprintf("=== RUN   %s", step.Title), true, true)
+		println(fmt.Sprintf("=== RUN   %s", step.Title), true, verbose)
 		ok, err := runTestStep(*step, client, conf)
 		if err != nil {
 			fail(i, step, err)
@@ -89,16 +88,15 @@ func RunTestSuite(configFilePath string) error {
 			fail(i, step, nil)
 			failed = true
 		} else {
-			// TODO: parametrize the final option
-			success(i, *step, true)
+			success(i, *step, verbose)
 		}
 	}
 
 	if failed {
-		println(fmt.Sprintf("FAIL    %s (0.00s)", conf.Name), false, true)
+		println(fmt.Sprintf("FAIL    %s (0.00s)", conf.Name), false, verbose)
 	} else {
 		println("PASS", false, true)
-		println(fmt.Sprintf("ok      %s (0.00s)", conf.Name), false, true)
+		println(fmt.Sprintf("ok      %s (0.00s)", conf.Name), false, verbose)
 	}
 
 	return nil
